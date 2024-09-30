@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="/layout :: head">
+    <title>List Student</title>
+</head>
+<body>
+<h3>Students</h3>
+<p>
+    <a th:href="@{/students/create}">
+        Add new customer
+    </a>
+</p>
+<p>
+    <a th:href="@{/classes}">
+        Classes
+    </a>
+</p>
+<div style="margin-bottom: 10px;margin-left: 110px">
+    <form th:action="@{/customers/search}" method="post">
+        <label><input type="text" name="search"></label>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
+<div class="notify">
+    <div th:if="${message}">
+        <span th:text="${message}"></span>
+    </div>
+</div>
+
+<table border="1" id="students">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Date of Birth</th>
+        <th>Address</th>
+        <th>Mark</th>
+        <th>Image</th>
+        <th>Class</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Duyệt qua danh sách students từ Model -->
+    <tr th:each="student : ${students}">
+        <td th:text="${student.id}"></td>
+        <td th:text="${student.firstname}"></td>
+        <td th:text="${student.lastname}"></td>
+        <td th:text="${#dates.format(student.dob, 'yyyy-MM-dd')}"></td>
+        <td th:text="${student.address}"></td>
+        <td th:text="${student.mark}"></td>
+        <td>
+            <img th:src="${student.img}" alt="Image" style="width:50px;height:50px;" />
+        </td>
+        <td th:text="${student.studentClass.name}"></td> <!-- Hiển thị tên lớp học của sinh viên -->
+        <td>
+            <a th:href="@{/student/update/{id}(id=${student.id})}">Edit</a> |
+            <form th:action="@{/student/delete/{id}(id=${student.id})}" method="post" style="display:inline;">
+                <input type="submit" value="Delete">
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<a class="btn btn-primary" th:if="${customers.hasPrevious()}"
+   th:href="@{/customers/(page=${customers.number - 1})}">Previous</a>
+<span th:text="${customers.number+1}"></span> | <span th:text="${customers.totalPages}"></span>
+<a class="btn btn-primary" th:if="${customers.hasNext()}"
+   th:href="@{/customers/(page=${customers.number + 1})}">Next</a>
+<footer th:replace="/layout :: footer"></footer>
+</body>
+</html>
